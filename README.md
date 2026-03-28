@@ -12,7 +12,11 @@
 ## 🎯 NYZEX SCRIPT - ULTIMATE ROBLOX UTILITY
 
 **Version:** v20 | **Status:** Stable | **Platform:** PC & Mobile
-
+---
+Script: (Execute on any roblox executor)
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproject/NyzeXPanel/refs/heads/main/panel.lua"))()
+```
 ---
 
 ## 🎬 INTRODUCTION

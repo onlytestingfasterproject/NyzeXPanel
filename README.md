@@ -1,4 +1,4 @@
-# 🔥 NYZEX SCRIPT v27 - COMPLETE DOCUMENTATION 🔥
+# 🔥 NYZEX PANEL v27 - COMPLETE DOCUMENTATION 🔥
 
 ```
     ███╗   ██╗██╗   ██╗███████╗███████╗██╗  ██╗
@@ -9,7 +9,7 @@
     ╚═╝  ╚═══╝   ╚═╝    ╚══════╝╚══════╝╚═╝  ╚═╝
 ```
 
-## 🎯 NYZEX SCRIPT v27 - ULTIMATE ROBLOX UTILITY
+## 🎯 NYZEX PANEL v27 - ULTIMATE ROBLOX UTILITY
 
 **Version:** v27 | **Status:** Stable | **Platform:** PC & Mobile | **Release:** March 2026
 
@@ -26,7 +26,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproj
 
 ## 🎬 INTRODUCTION
 
-**NyzeX Script v27** is a premium Roblox utility script featuring advanced AI-powered targeting, smooth performance optimization, and cross-platform compatibility. This version introduces **persistent AI targeting**, **smart switching logic**, and **enhanced mobile controls**.
+**NyzeX Panel v27** is a premium Roblox utility script featuring advanced AI-powered targeting, smooth performance optimization, and cross-platform compatibility. This version introduces **persistent AI targeting**, **smart switching logic**, and **enhanced mobile controls**.
 
 **Key Highlights:**
 - ✅ **4 Advanced Aimbot Modes** including AI Power with persistence

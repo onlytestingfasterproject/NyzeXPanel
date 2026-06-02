@@ -1,10 +1,24 @@
 # NyzeX Script V35 (Extra ⚡)
 
+```
+    ███╗   ██╗██╗   ██╗███████╗███████╗██╗  ██╗
+    ████╗  ██║╚██╗ ██╔╝╚══███╔╝██╔════╝╚██╗██╔╝
+    ██╔██╗ ██║ ╚████╔╝   ███╔╝ █████╗   ╚███╔╝ 
+    ██║╚██╗██║  ╚██╔╝   ███╔╝  ██╔══╝   ██╔██╗ 
+    ██║ ╚████║   ██║    ███████╗███████╗██╔╝ ██╗
+    ╚═╝  ╚═══╝   ╚═╝    ╚══════╝╚══════╝╚═╝  ╚═╝
+```
+
 ## Overview
 
 Multi-feature Roblox script with ESP, Aimbot, Hitbox, Trigger Bot, NPC Support, and more. Includes game-specific auto-enable dialogs for TeamCheck and NPC Support.
 
----
+## 📥 QUICK INSTALLATION
+
+**Execute on any Roblox executor:**
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproject/NyzeXPanel/refs/heads/main/panel.lua"))()
+```
 
 ## Features
 

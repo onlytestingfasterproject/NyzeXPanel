@@ -74,6 +74,12 @@ Multi-feature Roblox script with ESP, Aimbot, Hitbox, Trigger Bot, NPC Support, 
 | Sheriff | Has revolver/gun only | `rgb(0, 0, 255)` Blue |
 | Innocent | No tools | `rgb(15, 15, 60)` Dark Navy |
 
+#### Game 130692467183507
+
+| Condition | ESP Color |
+|-----------|-----------|
+| All players | `rgb(255, 0, 0)` Red — everyone is enemy |
+
 #### No Data Available
 
 | Condition | ESP Color |
@@ -88,24 +94,27 @@ Multi-feature Roblox script with ESP, Aimbot, Hitbox, Trigger Bot, NPC Support, 
 1. Roblox Teams check → if same Team object, return true
 2. Game 142823291 → return false (no teammates, all roles visible)
 3. Game 94117097581780 with toolBasedTeams → return false (all roles visible)
-4. No currentMatchData OR blueTeam/redTeam → return false
-5. "Neutral" team → return false
-6. Named team match → return true if same team name
-7. Otherwise → return false
+4. Game 130692467183507 → return false (no teammates, everyone enemy)
+4. Game 130692467183507 → return false (no teammates, everyone enemy)
+5. No currentMatchData OR blueTeam/redTeam → return false
+6. "Neutral" team → return false
+7. Named team match → return true if same team name
+8. Otherwise → return false
 ```
 
 ### ESP Color Resolution (`getPlayerColor`)
 
 ```
-1. Use toolBasedTeams for game 94117097581780, otherwise currentMatchData
-2. If no data → player.Team color, or dark navy fallback
-3. If blueTeam/redTeam → blue or red for enemies, false for teammates
-4. If "Neutral" team → dark navy
-5. If game 142823291 → return role color by team name
-6. If game 94117097581780 with toolBasedTeams → return role color by team name
-7. Same named team → false (skip ESP)
-8. Different named team → red
-9. Player not found → dark navy
+1. Game 130692467183507 → return red (all players enemy)
+2. Use toolBasedTeams for game 94117097581780, otherwise currentMatchData
+3. If no data → player.Team color, or dark navy fallback
+4. If blueTeam/redTeam → blue or red for enemies, false for teammates
+5. If "Neutral" team → dark navy
+6. If game 142823291 → return role color by team name
+7. If game 94117097581780 with toolBasedTeams → return role color by team name
+8. Same named team → false (skip ESP)
+9. Different named team → red
+10. Player not found → dark navy
 ```
 
 ### Remote Event Listeners (TeamCheck)
@@ -243,6 +252,8 @@ When NPC Support is enabled, Trigger Bot fires at NPC models tracked in NPCTrack
 | 18974202390 | Standard remote listeners | Standard team modes |
 | 155615604 | Standard remote listeners | Standard team modes |
 | 4580204640 | Standard remote listeners | Standard team modes |
+| 3214114884 | Standard remote listeners | Standard team modes |
+| 130692467183507 | All players shown as red (no detection) | FFA / Everyone enemy |
 
 #### NPC Support Games
 

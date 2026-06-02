@@ -1,21 +1,46 @@
-# NyzeX Script — TeamCheck System
+# NyzeX Script V35 (Extra ⚡)
 
 ## Overview
-TeamCheck provides colored ESP outlines, hitboxes, and aimbot teammate filtering across multiple game modes. It uses three separate detection methods that never interfere with each other.
 
-## Detection Layers (Priority Order)
-
-| Layer | Variable | Source | Used For |
-|-------|----------|--------|----------|
-| 1. Tool-Based | `toolBasedTeams` | Backpack tool scanning | Game 94117097581780 MurderMystery/FFA |
-| 2. Match Data | `currentMatchData` | Remote event listeners | All other modes |
-| 3. Roblox Teams | `player.Team` | Roblox engine fallback | Games with built-in teams |
+Multi-feature Roblox script with ESP, Aimbot, Hitbox, Trigger Bot, NPC Support, and more. Includes game-specific auto-enable dialogs for TeamCheck and NPC Support.
 
 ---
 
-## Color Reference
+## Features
 
-### Standard Team Colors (blueTeam/redTeam)
+| Feature | Default | Description |
+|---------|---------|-------------|
+| **ESP** | ON | Colored player outlines (enemy highlight) |
+| **Hitbox** | ON | Expanded hitbox parts for easier targeting |
+| **Zoom** | ON | Hold Left Alt to zoom (FOV-based) |
+| **Show FOV Circle** | ON | Display aimbot FOV circle |
+| **Aimbot Prediction** | ON | Leading target movement prediction |
+| **Speed** | OFF | Walk speed boost |
+| **Click TP** | OFF | Teleport to mouse click position |
+| **WallBreak** | OFF | Noclip through walls |
+| **Team Check** | OFF | Skip teammates in ESP, Hitbox, Aimbot |
+| **Name Tag** | OFF | Show player names above heads |
+| **FlyJump** | OFF | Enhanced jump/fly movement |
+| **Xray** | OFF | See players through walls |
+| **Trigger Bot** | OFF | Auto-fire when crosshair on enemy |
+| **NPC Support** | OFF | Enable NPC targeting for all systems |
+| **Mouse Unlock** | — | Press P to unlock mouse from FPS camera |
+
+---
+
+## TeamCheck System
+
+### Detection Layers (Priority Order)
+
+| Layer | Variable | Source | Used For |
+|-------|----------|--------|----------|
+| 1. Tool-Based | `toolBasedTeams` | Backpack tool scanning | Game 94117097581780 (MurderMystery/FFA) |
+| 2. Match Data | `currentMatchData` | Remote event listeners | All other modes |
+| 3. Roblox Teams | `player.Team` | Roblox engine fallback | Games with built-in teams |
+
+### Color Reference
+
+#### Standard Team Colors (blueTeam/redTeam)
 
 | Team | ESP Color | Meaning |
 |------|-----------|---------|
@@ -24,7 +49,7 @@ TeamCheck provides colored ESP outlines, hitboxes, and aimbot teammate filtering
 | Red Team | `rgb(255, 0, 0)` Red | Enemy |
 | Unmatched | `rgb(15, 15, 60)` Dark Navy | No team found |
 
-### Named Team Colors (custom team names)
+#### Named Team Colors
 
 | Condition | ESP Color | Meaning |
 |-----------|-----------|---------|
@@ -32,7 +57,7 @@ TeamCheck provides colored ESP outlines, hitboxes, and aimbot teammate filtering
 | Different team name | `rgb(255, 0, 0)` Red | Enemy |
 | Player not in any team | `rgb(15, 15, 60)` Dark Navy | Fallback |
 
-### Role Colors — Game 142823291
+#### Role Colors — Game 142823291
 
 | Role | ESP Color | Meaning |
 |------|-----------|---------|
@@ -41,9 +66,7 @@ TeamCheck provides colored ESP outlines, hitboxes, and aimbot teammate filtering
 | Innocent | `rgb(15, 15, 60)` Dark Navy | Neutral |
 | Hero | `rgb(0, 0, 255)` Blue | Ally |
 
-No players are skipped in this game — every role gets a color. Teammate detection uses Roblox Teams only.
-
-### Role Colors — Game 94117097581780 (MurderMystery/FFA)
+#### Role Colors — Game 94117097581780 (MurderMystery/FFA)
 
 | Role | Detection Method | ESP Color |
 |------|-----------------|-----------|
@@ -51,9 +74,7 @@ No players are skipped in this game — every role gets a color. Teammate detect
 | Sheriff | Has revolver/gun only | `rgb(0, 0, 255)` Blue |
 | Innocent | No tools | `rgb(15, 15, 60)` Dark Navy |
 
-No players are skipped in tool mode — every role gets a color. Teammate detection is bypassed.
-
-### No Data Available
+#### No Data Available
 
 | Condition | ESP Color |
 |-----------|-----------|
@@ -61,81 +82,7 @@ No players are skipped in tool mode — every role gets a color. Teammate detect
 | `currentMatchData` is nil, no Roblox Team | `rgb(15, 15, 60)` Dark Navy |
 | `currentMatchData` contains `"Neutral"` | `rgb(15, 15, 60)` Dark Navy |
 
----
-
-## Supported Game IDs
-
-| Game ID | Detection Method | Modes |
-|---------|-----------------|-------|
-| 142823291 | Remote events (`RoundStart`, `PlayerDataChanged`) | Sheriff/Murderer/Innocent/Hero |
-| 94117097581780 | Backpack tool scanning (`AddAvailableMatch`) | MurderMystery, FFA |
-| 91479234935369 | Standard remote listeners | Standard team modes |
-| All others | Remote listeners + Roblox Teams | blueTeam/redTeam, named teams |
-
----
-
-## Remote Event Listeners
-
-All listeners connect after a 3-second startup delay.
-
-### General (All Games)
-
-| Remote | Path | Data Format | Behavior |
-|--------|------|-------------|----------|
-| `GiveOutline` | `ReplicatedStorage.RemoteEvents` | `{ blueTeam = {...}, redTeam = {...} }` or named teams | Sets `currentMatchData`, refreshes ESP |
-| `RoundUpdateFunction` | `ReplicatedStorage.Remotes.Match` | `action = "SetTeams"`, `teamsData = {...}` | Sets `currentMatchData` on `SetTeams` action |
-| `StartVoting` | `ReplicatedStorage.RemoteEvents` | `{ blueTeam = {...}, redTeam = {...} }` | Sets `currentMatchData` only if both blueTeam and redTeam exist |
-
-### Game 142823291
-
-| Remote | Path | Data Format | Behavior |
-|--------|------|-------------|----------|
-| `RoundStart` | `ReplicatedStorage.Remotes.Gameplay` | `time`, `{ [playerName] = { Role = "Murderer" \| "Sheriff" \| "Innocent" \| "Hero" } }` | Builds `currentMatchData` as `{ Murderer = {...}, Sheriff = {...}, Innocent = {...}, Hero = {...} }` |
-| `PlayerDataChanged` | `ReplicatedStorage.Remotes.Gameplay` | Same format as RoundStart | Updates roles mid-round |
-
-### Game 94117097581780
-
-| Remote | Path | Match Types | Behavior |
-|--------|------|-------------|----------|
-| `AddAvailableMatch` | `ReplicatedStorage.Remotes.UI` | `"MurderMystery"`, `"FFA"` | Activates tool mode only when local player is in teamData |
-| `EndMatch` | `ReplicatedStorage.Remotes.Match` | — | Clears `toolBasedTeams`, deactivates tool mode |
-
----
-
-## Tool Detection System
-
-### Activation
-1. `AddAvailableMatch` fires with `"MurderMystery"` or `"FFA"`
-2. Local player must be in the match's teamData (prevents activating for other players' matches)
-3. Tool mode activates once per match (`toolMode` guard prevents duplicates)
-
-### Detection Logic
-```
-Scan each player's Character and Backpack for Tool instances:
-  - Name contains "knife"     → hasKnife = true
-  - Name contains "revolver" or "gun" → hasGun = true
-
-Role assignment:
-  hasKnife AND hasGun  → "Murderer"  (red)
-  hasGun only          → "Sheriff"   (blue)
-  hasKnife only        → "Murderer"  (red)
-  neither              → "Innocent"  (dark navy)
-```
-
-### Event-Driven Watching
-- `ChildAdded` / `ChildRemoved` on each player's Backpack → triggers scan
-- `CharacterAdded` on each player → triggers scan after 0.5s
-- `PlayerAdded` → new players are watched immediately
-
-### Performance Optimizations
-- **Debounce**: scans are rate-limited to once per 0.3 seconds
-- **Change detection**: `RefreshAllESP()` and `RefreshAllHitboxes()` only run when at least one player's role changes
-- **Per-player role tracking**: `knownRoles` table caches previous roles for efficient comparison
-- **No periodic loops**: all scans are event-driven
-
----
-
-## Teammate Detection (`IsTeammate`)
+### Teammate Detection (`IsTeammate`)
 
 ```
 1. Roblox Teams check → if same Team object, return true
@@ -147,9 +94,7 @@ Role assignment:
 7. Otherwise → return false
 ```
 
----
-
-## ESP Color Resolution (`getPlayerColor`)
+### ESP Color Resolution (`getPlayerColor`)
 
 ```
 1. Use toolBasedTeams for game 94117097581780, otherwise currentMatchData
@@ -163,6 +108,261 @@ Role assignment:
 9. Player not found → dark navy
 ```
 
+### Remote Event Listeners (TeamCheck)
+
+All listeners connect after a 3-second startup delay.
+
+#### General (All Games)
+
+| Remote | Path | Data Format | Behavior |
+|--------|------|-------------|----------|
+| `GiveOutline` | `ReplicatedStorage.RemoteEvents` | `{ blueTeam = {...}, redTeam = {...} }` or named teams | Sets `currentMatchData`, refreshes ESP |
+| `RoundUpdateFunction` | `ReplicatedStorage.Remotes.Match` | `action = "SetTeams"`, `teamsData = {...}` | Sets `currentMatchData` on `SetTeams` action |
+| `StartVoting` | `ReplicatedStorage.RemoteEvents` | `{ blueTeam = {...}, redTeam = {...} }` | Sets `currentMatchData` only if both blueTeam and redTeam exist |
+
+#### Game 142823291
+
+| Remote | Path | Data Format | Behavior |
+|--------|------|-------------|----------|
+| `RoundStart` | `ReplicatedStorage.Remotes.Gameplay` | `time`, `{ [playerName] = { Role = "Murderer" \| "Sheriff" \| "Innocent" \| "Hero" } }` | Builds `currentMatchData` as role-grouped table |
+| `PlayerDataChanged` | `ReplicatedStorage.Remotes.Gameplay` | Same format as RoundStart | Updates roles mid-round |
+
+#### Game 94117097581780
+
+| Remote | Path | Match Types | Behavior |
+|--------|------|-------------|----------|
+| `AddAvailableMatch` | `ReplicatedStorage.Remotes.UI` | `"MurderMystery"`, `"FFA"` | Activates tool mode only when local player is in teamData |
+| `EndMatch` | `ReplicatedStorage.Remotes.Match` | — | Clears `toolBasedTeams`, deactivates tool mode |
+
+### Tool Detection System (Game 94117097581780)
+
+- Activated by `AddAvailableMatch` with `"MurderMystery"` or `"FFA"`
+- Local player must be in the match's teamData
+- Scans each player's Character and Backpack for Tools
+- Name contains `"knife"` → Murderer (red)
+- Name contains `"revolver"` or `"gun"` → Sheriff (blue)
+- Neither → Innocent (dark navy)
+- Debounced (0.3s) and event-driven (ChildAdded/Removed, CharacterAdded, PlayerAdded)
+
+---
+
+## NPC Support System
+
+### How It Works
+
+1. `StartNPCScan()` runs `ScanAndTrackNPCs()` on Heartbeat (throttled to 2s intervals)
+2. Scans workspace descendants for valid NPC models (Model + Humanoid + HumanoidRootPart, not a Player)
+3. Tracks NPCs in `NPCTracker` table with visual instances
+
+### NPC Detection Criteria
+
+- Must be a `Model`
+- Must not be the local player's character
+- Must not belong to a Player
+- Must have a Humanoid with Health > 0
+- Must have a HumanoidRootPart
+
+### NPC Visuals Applied
+
+| Visual | Description |
+|--------|-------------|
+| **ESP** | Yellow `Highlight` outline (when ESP is enabled) |
+| **NameTag** | `BillboardGui` showing NPC name (when NameTag is enabled) |
+| **Hitbox** | `SelectionBox` with expanded HumanoidRootPart (when Hitbox is enabled) |
+
+### NPC Aimbot Integration
+
+When NPC Support is enabled, all 4 aimbot modes include NPC targets alongside players:
+- **Closest to Crosshair** — includes NPCs in screen-distance calculation
+- **Closest Player** — includes NPCs in distance calculation
+- **Perfect Aim** — includes NPCs in priority scoring
+- **AI Power** — includes NPCs in AI scoring
+
+### NPC Trigger Bot Integration
+
+When NPC Support is enabled, Trigger Bot fires at NPC models tracked in NPCTracker.
+
+---
+
+## Aimbot System
+
+### Modes
+
+| Mode | Targeting Strategy |
+|------|--------------------|
+| **Closest to Crosshair** | Picks target with smallest screen distance from crosshair |
+| **Closest Player** | Picks target with smallest 3D world distance |
+| **Perfect Aim** | Scores targets by distance, health, and angle priority |
+| **AI Power** | Uses a composite AI score with target switching delay |
+
+### Aimbot Settings
+
+| Setting | Control | Default |
+|---------|---------|---------|
+| FOV Radius | Slider | 200 |
+| Target Part | Toggle (Head/Body) | Head |
+| Show FOV Circle | Toggle | On |
+| Prediction Amount | Slider | 0.1 |
+| Aim Smoothness | Slider | 0.8 |
+| Max Distance | Slider | 1000 |
+| Target Stickiness | Slider | 0.3s |
+| AI Switch Delay | Slider | 1.5s |
+| AI Switch Threshold | Slider | 15% |
+| Use Prediction | Toggle | On |
+
+### Lock Target (L key)
+
+- Locks aimbot onto current target
+- Sticky target persists briefly (stickiness duration) after target moves off crosshair
+- Locked target is validated each frame (must be valid player/NPC, within FOV, not teammate)
+
+---
+
+## Trigger Bot
+
+- Scans a grid around the crosshair using raycasts
+- Fires when crosshair is on an enemy player or NPC (with NPC Support)
+- Configurable cooldown (default 0.1s)
+- Configurable scan radius (default 4)
+- Runs on RenderStepped
+- Uses `VirtualInputManager:SendMouseButtonEvent()` for input simulation
+
+---
+
+## Game Support Dialogs
+
+### Supported Game IDs
+
+#### TeamCheck Games
+
+| Game ID | Detection Method | Modes |
+|---------|-----------------|-------|
+| 142823291 | Remote events (`RoundStart`, `PlayerDataChanged`) | Sheriff/Murderer/Innocent/Hero |
+| 94117097581780 | Backpack tool scanning (`AddAvailableMatch`) | MurderMystery, FFA |
+| 91479234935369 | Standard remote listeners | Standard team modes |
+| 18974202390 | Standard remote listeners | Standard team modes |
+| 155615604 | Standard remote listeners | Standard team modes |
+| 4580204640 | Standard remote listeners | Standard team modes |
+
+#### NPC Support Games
+
+| Game ID | Description |
+|---------|-------------|
+| 116495829188952 | Game with NPC enemies |
+
+### Auto-Enable Countdown
+
+When the script detects a supported game, a dialog appears after 4 seconds:
+
+```
+Dialog shows → Countdown starts at 20s
+  Every 1s: "Auto-enabling in Xs"
+  Click "Enable" → enables immediately
+  Timer hits 0 → enables automatically
+  Fade-out animation (0.3s) → GUI destroyed
+```
+
+- **TeamCheck dialog**: Explains TeamCheck features, enables `TeamCheckEnabled`
+- **NPC Support dialog**: Explains NPC Support features, enables `NpcSupportEnabled`
+
+---
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| **T** | Toggle GUI panel (minimize/maximize) |
+| **R** | Toggle Aimbot ON/OFF |
+| **C** | Cycle target part (Head ↔ Body) |
+| **V** | Cycle aimbot mode |
+| **L** | Lock / unlock current target |
+| **P** | Unlock mouse from FPS camera lock |
+| **Left Alt** | Hold to zoom |
+
+---
+
+## GUI Controls
+
+### Main Toggle Buttons
+
+- Speed, ESP, Hitbox, Click TP, WallBreak, Team Check, Name Tag, FlyJump, Aimbot, Xray, Zoom, TriggerBot, NPC Support
+
+### Mode/Action Buttons
+
+- Change Mode (cycles through 4 aimbot modes)
+- Head Target / Body Target
+- Respawn Character
+- Start/Stop Follow
+- Spectate / Stop Spectate
+- Teleport to Player
+
+### Sliders
+
+- FOV Radius, Speed Amount, Hitbox Size, Hitbox Outline Thickness, FlyJump Power, Zoom FOV, Zoom Speed
+- Target Stickiness, AI Switch Delay, AI Switch Threshold, Max Distance
+- Prediction Amount, Aim Smoothness
+
+### Save/Load Settings
+
+| Button | Action |
+|--------|--------|
+| Save Settings | Saves all toggles/sliders to `NyzeX_Settings_<PlaceId>.json` |
+| Load Settings | Loads saved settings and applies them |
+| Reset to Defaults | Deletes saved file, resets everything to defaults |
+
+### Auto-Load on Startup
+
+If saved settings exist for the current game, a confirmation dialog appears after 2 seconds asking to load them.
+
+---
+
+## Mouse Unlock (P Key)
+
+- Toggles `MouseUnlockOverride` to force mouse unlock from FPS camera lock
+- Uses `RenderStepped` connection to continuously override game's mouse lock
+- Shows notification: "Mouse locked by game — press P to unlock" when game locks mouse
+- Forces cursor icon visibility
+
+---
+
+## Click Teleport
+
+- When enabled, left-clicking on a surface teleports the local player to that position
+- Uses `workspace:Raycast()` from mouse position
+
+---
+
+## WallBreak (Noclip)
+
+- Enables/disables noclip on the local player's character
+- Works on all character parts via `Stepped` connection
+- Toggle on/off dynamically
+
+---
+
+## FlyJump
+
+- Enhanced jump with configurable power
+- Increases `JumpPower` / `JumpHeight` on the Humanoid
+
+---
+
+## Xray
+
+- Makes all non-character parts transparent to see players through walls
+- Toggle on/off
+
+---
+
+## Settings Persistence
+
+Settings are saved per-game as JSON files:
+
+- **File format**: `NyzeX_Settings_<PlaceId>.json`
+- **Contents**: All toggle states, slider values, target part, aimbot mode
+- **Location**: Executor's writable directory (`writefile`)
+- **Auto-load**: Optional prompt on script start
+
 ---
 
 ## Default Colors
@@ -174,22 +374,3 @@ ColorBlack = Color3.fromRGB(0, 0, 0)
 ```
 
 Dark navy fallback: `Color3.fromRGB(15, 15, 60)`
-
----
-
-## Setup ESP Flow
-
-```
-SetupESP(player):
-  1. Skip if ESP disabled
-  2. Skip if no character/humanoid/HRP
-  3. Skip if Teammate (same team → no outline)
-  4. Get color from getPlayerColor()
-  5. If false → skip (teammate, no outline)
-  6. If Color3 → use as outline color
-  7. If nil → default red outline
-  8. Strip game visuals (interfering Highlights/Strokes)
-  9. Create Highlight with outline color
-```
-
-Hitbox and Aimbot also use `IsTeammate` and `getPlayerColor` for filtering.

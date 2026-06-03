@@ -1,4 +1,4 @@
-# NyzeX Script V35 (Extra ⚡)
+# NyzeX Script V37 (Extra ⚡)
 
 ```
     ███╗   ██╗██╗   ██╗███████╗███████╗██╗  ██╗
@@ -19,6 +19,8 @@ Multi-feature Roblox script with ESP, Aimbot, Hitbox, Trigger Bot, NPC Support, 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproject/NyzeXPanel/refs/heads/main/panel.lua"))()
 ```
+
+---
 
 ## Features
 
@@ -94,6 +96,14 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproj
 |-----------|-----------|
 | All players | `rgb(255, 0, 0)` Red — everyone is enemy |
 
+#### Game 86178279217218 — Container + Highlight detection
+
+| Condition | ESP Color | System |
+|-----------|-----------|--------|
+| Teammate (has game Highlight) | Roblox TeamColor (visible) | ESP — team color outline |
+| Enemy (no game Highlight) | `rgb(255, 0, 0)` Red | ESP, Hitbox, Aimbot |
+| Fallback (no match data) | `rgb(15, 15, 60)` Dark Navy | ESP only — Hitbox/Aimbot disabled |
+
 #### No Data Available
 
 | Condition | ESP Color |
@@ -126,10 +136,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproj
 5. If "Neutral" team → dark navy
 6. If game 142823291 → return role color by team name
 7. If game 94117097581780 with toolBasedTeams → return role color by team name
-8. Same named team → false (skip ESP)
+8. Same named team → false (skip ESP for all games except 86178279217218)
 9. Different named team → red
 10. Player not found → dark navy
 ```
+
+Note: When `getPlayerColor` returns `false` (teammate), ESP is skipped for all standard games. For game `86178279217218`, `false` is overridden to show the player's Roblox TeamColor. Hitbox and Aimbot always skip `false`-returned players regardless of game.
 
 ### Remote Event Listeners (TeamCheck)
 
@@ -157,6 +169,17 @@ All listeners connect after a 3-second startup delay.
 | `AddAvailableMatch` | `ReplicatedStorage.Remotes.UI` | `"MurderMystery"`, `"FFA"` | Activates tool mode only when local player is in teamData |
 | `EndMatch` | `ReplicatedStorage.Remotes.Match` | — | Clears `toolBasedTeams`, deactivates tool mode |
 
+#### Game 86178279217218 — Container + Highlight detection
+
+| Mechanism | Path / Source | Behavior |
+|-----------|---------------|----------|
+| Player list | `PlayerGui.TopGui.GameStats.Container` — Frame children (name = player) | Scans Frame children for player names |
+| Team detection | Character `Highlight` instances (except NyzeX_ESP) | Has Highlight = teammate; no Highlight = enemy |
+| 1v1 shortcut | Container has exactly 2 frames | Other player = enemy (no Highlight scan) |
+| EndGame | `ReplicatedStorage.Events.Round.OnClientEvent` → `"EndGame"` | Clears `currentMatchData`, removes all ESP/Hitbox |
+| New match | Container child changes | Resets `matchEnded` flag, re-runs team scan |
+| StripGameVisuals | Exception for 86178279217218 | Game's native Highlight instances are NOT destroyed |
+
 ### Tool Detection System (Game 94117097581780)
 
 - Activated by `AddAvailableMatch` with `"MurderMystery"` or `"FFA"`
@@ -166,6 +189,24 @@ All listeners connect after a 3-second startup delay.
 - Name contains `"revolver"` or `"gun"` → Sheriff (blue)
 - Neither → Innocent (dark navy)
 - Debounced (0.3s) and event-driven (ChildAdded/Removed, CharacterAdded, PlayerAdded)
+
+### Game-Specific Edge Cases
+
+#### StripGameVisuals Exception
+
+| Game | Behavior |
+|------|----------|
+| All games except 86178279217218 | Game `Highlight`/`SelectionBox`/`UIStroke` instances are destroyed |
+| 86178279217218 | Game `Highlight` instances are preserved (required for team detection) |
+
+#### Fallback State (no currentMatchData)
+
+| Game | ESP Color | Hitbox | Aimbot |
+|------|-----------|--------|--------|
+| 86178279217218 | Dark navy (`15,15,60`) or Roblox TeamColor | Disabled | Disabled |
+| All others | Roblox TeamColor or dark navy | Normal behavior | Normal behavior |
+
+When game `86178279217218`'s match ends (`EndGame` remote event), `currentMatchData` is set to `nil`, all ESP/Hitbox are cleaned up, and `matchEnded` flag prevents re-scans. A new match is detected when new Frame children appear in the Container.
 
 ---
 
@@ -268,12 +309,17 @@ When NPC Support is enabled, Trigger Bot fires at NPC models tracked in NPCTrack
 | 4580204640 | Standard remote listeners | Standard team modes |
 | 3214114884 | Standard remote listeners | Standard team modes |
 | 130692467183507 | All players shown as red (no detection) | FFA / Everyone enemy |
+| 11276071411 | Standard remote listeners | Standard team modes |
+| 126922689754590 | KillerFolder/PlayersFolder detection (killer=red, players=blue) | Detective-style game |
+| 86178279217218 | Container frames + game Highlight (has HL = teammate, no HL = enemy); 1v1 shortcut | Team vs enemy — teammates shown with Roblox TeamColor in ESP |
 
 #### NPC Support Games
 
 | Game ID | Description |
 |---------|-------------|
 | 116495829188952 | Game with NPC enemies |
+| 115286378269814 | Game with NPC enemies |
+| 16389395869 | Game with NPC enemies |
 
 ### Auto-Enable Countdown
 

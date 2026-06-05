@@ -1,4 +1,4 @@
-# NyzeX Script V37 (Extra ⚡)
+# NyzeX Script v38 (Optimized)
 
 ```
     ███╗   ██╗██╗   ██╗███████╗███████╗██╗  ██╗
@@ -81,6 +81,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/onlytestingfasterproj
 | Sheriff | `rgb(0, 0, 255)` Blue | Ally |
 | Innocent | `rgb(15, 15, 60)` Dark Navy | Neutral |
 | Hero | `rgb(0, 0, 255)` Blue | Ally |
+| Hero (tool-detected) | `rgb(0, 0, 255)` Blue | Detected mid-round via bone/hero tool scanning |
 
 #### Role Colors — Game 94117097581780 (MurderMystery/FFA)
 
@@ -157,10 +158,11 @@ All listeners connect after a 3-second startup delay.
 
 #### Game 142823291
 
-| Remote | Path | Data Format | Behavior |
-|--------|------|-------------|----------|
+| Remote / Method | Path / Source | Data Format | Behavior |
+|----------------|---------------|-------------|----------|
 | `RoundStart` | `ReplicatedStorage.Remotes.Gameplay` | `time`, `{ [playerName] = { Role = "Murderer" \| "Sheriff" \| "Innocent" \| "Hero" } }` | Builds `currentMatchData` as role-grouped table |
-| `PlayerDataChanged` | `ReplicatedStorage.Remotes.Gameplay` | Same format as RoundStart | Updates roles mid-round |
+| `PlayerDataChanged` | `ReplicatedStorage.Remotes.Gameplay` | Same as RoundStart, or `{ [playerName] = "RoleString" }` | Updates roles mid-round (handles both table and string formats) |
+| **Tool-Based (fallback)** | Character + Backpack tool scan | Detects `bone`, `hero`, `knife`, `gun`, `revolver` in tool names | Monitors all players for tool changes; catches Hero rank mid-round even if remotes don't fire |
 
 #### Game 94117097581780
 
@@ -180,7 +182,9 @@ All listeners connect after a 3-second startup delay.
 | New match | Container child changes | Resets `matchEnded` flag, re-runs team scan |
 | StripGameVisuals | Exception for 86178279217218 | Game's native Highlight instances are NOT destroyed |
 
-### Tool Detection System (Game 94117097581780)
+### Tool Detection System
+
+#### Game 94117097581780 (MurderMystery/FFA)
 
 - Activated by `AddAvailableMatch` with `"MurderMystery"` or `"FFA"`
 - Local player must be in the match's teamData
@@ -189,6 +193,18 @@ All listeners connect after a 3-second startup delay.
 - Name contains `"revolver"` or `"gun"` → Sheriff (blue)
 - Neither → Innocent (dark navy)
 - Debounced (0.3s) and event-driven (ChildAdded/Removed, CharacterAdded, PlayerAdded)
+
+#### Game 142823291 (Mid-Round Hero Fallback)
+
+- Runs as a fallback alongside remote event listeners
+- Scans each player's Character and Backpack for Tools
+- Name contains `"bone"` or `"hero"` → Hero (blue)
+- Name contains `"knife"` or `"m9"` → Murderer (red)
+- Name contains `"revolver"` or `"gun"` → Sheriff (blue)
+- None of the above → Innocent (dark navy)
+- Only triggers on role changes (knownRoles cache)
+- Debounced (0.3s) and event-driven (ChildAdded/Removed, CharacterAdded, PlayerAdded)
+- Catches Hero rank dynamically without relying on remote events
 
 ### Game-Specific Edge Cases
 
@@ -301,7 +317,7 @@ When NPC Support is enabled, Trigger Bot fires at NPC models tracked in NPCTrack
 
 | Game ID | Detection Method | Modes |
 |---------|-----------------|-------|
-| 142823291 | Remote events (`RoundStart`, `PlayerDataChanged`) | Sheriff/Murderer/Innocent/Hero |
+| 142823291 | Remote events (`RoundStart`, `PlayerDataChanged`) + Tool-Based fallback for mid-round Hero detection | Sheriff/Murderer/Innocent/Hero |
 | 94117097581780 | Backpack tool scanning (`AddAvailableMatch`) | MurderMystery, FFA |
 | 91479234935369 | Standard remote listeners | Standard team modes |
 | 18974202390 | Standard remote listeners | Standard team modes |
